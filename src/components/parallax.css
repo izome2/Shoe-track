@@ -1,0 +1,49 @@
+@font-face {
+  font-family: 'Giddyup Std';
+  src: url('/assets/Giddyup Std Regular.ttf') format('truetype');
+}
+
+body {
+  overflow-x: hidden;
+}
+.parallax-blur {
+  position: absolute;
+  font-family: "Giddyup Std", sans-serif; 
+  font-size: 20vw;
+  font-style: italic;
+  left: 12%;
+  color: rgb(255, 255, 255);
+  filter: blur(60px);
+}
+.parallax-text {
+  position: absolute;
+  font-family: "Giddyup Std", sans-serif; 
+  font-size: 20vw;
+  font-style: italic;
+  left: 12%;
+  color: rgb(255, 255, 255);
+}
+
+.parallax-text::after {
+  content: attr(text);
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  color: transparent;
+  -webkit-text-stroke: 0.08vw rgb(255, 255, 255);
+}
+
+img.sneaker-image {
+  width: 33vw;
+  animation: sneakerAnimation 2s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
+}
+
+@keyframes sneakerAnimation {
+  0%, 10% {
+    transform: translate(100vw, 0) rotate(15deg);
+  }
+  90%, 100% {
+    transform: translate(-5vw, -5vw) rotate(-30deg);
+  }
+}
