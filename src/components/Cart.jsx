@@ -13,6 +13,7 @@ import {
 import CartCount from "./cart/CartCount";
 import CartEmpty from "./cart/CartEmpty";
 import CartItem from "./cart/CartItem";
+import annyang from 'annyang';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -25,10 +26,51 @@ const Cart = () => {
   const [couponError, setCouponError] = useState('');
   const [isValidCoupon, setIsValidCoupon] = useState(false);
   const [shakeKey, setShakeKey] = useState(0);
+  const [ifCartBackdropState, setIfCartBackdropState] = useState(false);
+
+  useEffect(() => {
+    dispatch(setGetTotals());
+
+    if (annyang) {
+      annyang.addCommands({
+        'close my cart': () => {
+          dispatch(setCloseCart({ cartState: false }));
+        }
+      });
+
+      annyang.start({ autoRestart: true, continuous: true });
+
+      annyang.addCallback('error', () => {
+        annyang.start({ autoRestart: true, continuous: true });
+      });
+
+      annyang.addCallback('end', () => {
+        annyang.start({ autoRestart: true, continuous: true });
+      });
+    }
+
+    return () => {
+      if (annyang) {
+        annyang.abort();
+      }
+    };
+  }, [cartItems, dispatch]);
 
   useEffect(() => {
     dispatch(setGetTotals());
   }, [cartItems, dispatch]);
+
+  useEffect(() => {
+    if (ifCartState) {
+      const timer = setTimeout(() => {
+        setIfCartBackdropState(true);
+      }, 300);
+
+      return () => clearTimeout(timer);
+    } else {
+      setIfCartBackdropState(false);
+    }
+  }, [ifCartState]);
 
   const onCartToggle = () => {
     dispatch(setCloseCart({ cartState: false }));
@@ -47,7 +89,7 @@ const Cart = () => {
       setDiscount(0);
       setCouponError('The coupon is invalid');
       setIsValidCoupon(false);
-      setShakeKey(prevKey => prevKey + 1); 
+      setShakeKey(prevKey => prevKey + 1);
     }
   };
 
@@ -60,10 +102,19 @@ const Cart = () => {
 
   return (
     <motion.div
-      className={`fixed top-0 left-0 right-0 bottom-0 duration-500 w-full opacity-100 z-[250] ${
+      className={`fixed top-0 left-0 right-0 bottom-0 duration-500 w-full z-[250] ${
         ifCartState ? "opacity-100 visible translate-x-0" : "opacity-0 invisible translate-x-8"
       }`}
     >
+      <motion.div
+        className={`fixed top-0 left-0 right-0 bottom-0 z-40 ${ifCartBackdropState ? "visible" : "invisible"}`}
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          opacity: ifCartBackdropState ? 1 : 0,
+          transition: 'opacity 0.5s ease-in-out',
+        }}
+      ></motion.div>
+
       <div
         className={`blur-effect-theme duration-500 max-w-xl absolute right-8 transform scale-100 ${
           ifCartState ? "opacity-100 visible translate-x-0" : "opacity-0 invisible translate-x-8"
@@ -71,7 +122,7 @@ const Cart = () => {
         style={{
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.2)',
-          top: '50%', 
+          top: '50%',
           transform: 'translateY(-50%)',
           height: '90vh',
           borderRadius: '1.5rem',
@@ -90,31 +141,31 @@ const Cart = () => {
             </div>
 
             <div className="fixed bottom-0 bg-white w-full px-5 py-2 grid items-center"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-              borderRadius: '1.5rem',
-            }}>
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                borderRadius: '1.5rem',
+              }}>
               <div className="flex items-center justify-between">
                 <h1 className="text-base font-semibold uppercase">Total :</h1>
-                <h1 className="bg-[#0000000e]  rounded-lg px-3 py-2 text-white-100 font-normal text-sm">${discountedTotal.toFixed(2)}</h1>
+                <h1 className="bg-[#0000000e] rounded-lg px-3 py-2 text-white-100 font-normal text-sm">${discountedTotal.toFixed(2)}</h1>
               </div>
               <div className="grid items-center gap-2">
                 <p className="text-sm font-medium text-center">Do you have a discount coupon?</p>
                 <div className="flex items-center justify-between w-full">
                   <motion.input
-                    key={shakeKey} 
-                    type="text" 
-                    value={coupon} 
-                    onChange={(e) => setCoupon(e.target.value)} 
-                    placeholder="Enter (ahmed) to get a 20% discount !"
+                    key={shakeKey}
+                    type="text"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
+                    placeholder="Enter (ahmed) to get a 20% discount!"
                     className={`input-theme px-3 py-2 rounded-lg text-black text-sm w-[290px] ${
                       isValidCoupon ? 'bg-green-200' : couponError ? 'bg-red-200' : 'bg-[#0000000e]'
                     }`}
                     style={{ outline: 'none' }}
                     {...(!isValidCoupon && couponError ? shakeAnimation : {})}
                   />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={applyDiscount}
                     className="button-theme bg-gradient-to-b from-[#d46b95] to-[#ffa179] flex items-center justify-center text-white py-2 gap-3 text-base px-8 font-semibold rounded-2xl active:scale-120"
                   >

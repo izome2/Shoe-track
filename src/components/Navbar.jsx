@@ -29,7 +29,7 @@ const Navbar = () => {
 
     const scrollToPosition = useCallback(() => {
         window.scrollTo({
-            top: 1000,
+            top: 1400,
             behavior: 'smooth'
         });
         setNavActive(true);
@@ -37,7 +37,8 @@ const Navbar = () => {
 
     useEffect(() => {
         const commands = {
-            'start shopping': scrollToPosition
+            'start shopping': scrollToPosition,
+            'open my cart': onCartToggle
         };
 
         annyang.addCommands(commands);

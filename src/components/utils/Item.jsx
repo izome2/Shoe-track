@@ -50,13 +50,20 @@ const Item = ({
 
   useEffect(() => {
     if (annyang) {
-      var commands = {};
-      for (let i = 1; i <= 12; i++) {
-        commands[i.toString()] = () => addToCartHandler(i);
+      const commands = {};
+      for (let i = 1; i <= 24; i++) {
+        commands[`number ${i}`] = () => addToCartHandler(i);
       }
       annyang.addCommands(commands);
       annyang.setLanguage('en-US');
-      annyang.start();
+      annyang.start({ autoRestart: true, continuous: true });
+
+      annyang.addCallback('error', () => {
+        annyang.start({ autoRestart: true, continuous: true });
+      });
+      annyang.addCallback('end', () => {
+        annyang.start({ autoRestart: true, continuous: true });
+      });
     }
   }, []);
 
@@ -126,7 +133,7 @@ const Item = ({
   return (
     <motion.div
       ref={ref}
-      className="relative w-80 h-96 mx-4 my-4"
+      className="relative w-80 h-auto mx-4 my-4"
       initial={{ opacity: 0, y: 50 }}
       animate={controls}
     >
@@ -138,44 +145,47 @@ const Item = ({
           transition={{ duration: 0.3 }}
         ></motion.div>
       )}
-      <motion.div
-        ref={itemContainerRef}
-        className={`relative bg-white rounded-xl p-4 transition-transform duration-700 ease-in-out flex flex-col justify-between item-container ${
-          ifExists ? "justify-items-start" : "justify-items-center"
-        } ${isShaking ? "shake" : ""}`}
-        style={{
-          boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.2)",
-          zIndex: isExpanded ? 100 : 0,
-          borderRadius: "2rem",
-        }}
-        animate={{
-          transform: isExpanded ? "scale(1.2)" : "scale(1)",
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 200,
-          damping: 20,
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleExpansion();
-        }}
-        onTransitionEnd={() => setIsShaking(false)}
-      >
-        <div className="relative flex justify-center items-center h-48">
+    <motion.div
+      ref={itemContainerRef}
+      className={`relative bg-white rounded-xl p-4 transition-transform duration-700 ease-in-out flex flex-col justify-between item-container ${
+        ifExists ? "justify-items-start" : "justify-items-center"
+      } ${isShaking ? "shake" : ""}`}
+      style={{
+        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.2)",
+        zIndex: isExpanded ? 100 : 0,
+        borderRadius: "2rem",
+      }}
+      animate={{
+        transform: isExpanded ? "scale(1.2)" : "scale(1)",
+        height: isExpanded ? '28rem' : '24rem',
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleExpansion();
+      }}
+      onTransitionEnd={() => setIsShaking(false)}
+      whileHover={{
+        boxShadow: "0px 0px 40px rgba(0, 0, 0, 0.3)", 
+      }}
+    >        <div className="relative flex justify-center items-center h-48">
           <motion.div
             className="absolute inset-0 bg-gray-200 opacity-75 rounded-xl"
             style={{ borderRadius: "20px 20px 8px 8px" }}
           />
-          <motion.img
-            src={img}
-            alt={`img/item-img/${id}`}
-            className="absolute object-contain h-full z-10"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          />
-        </div>
+<motion.img
+  src={img}
+  alt={`img/item-img/${id}`}
+  className="absolute object-contain z-10"
+  style={{ width: '80%', height: '80%' }}
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.1, duration: 0.5 }}
+/>        </div>
         <motion.h1
           className="text-lg font-medium text-gray-800 mt-2"
           initial={{ opacity: 0, y: -20 }}
