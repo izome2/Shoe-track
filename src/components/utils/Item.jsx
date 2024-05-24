@@ -1,28 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { StarIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
-import { setAddItemToCart, setOpenCart, setDecreaseItemQTY, setRemoveItemFromCart } from "../../app/CartSlice";
+import {
+  setAddItemToCart,
+  setOpenCart,
+  setDecreaseItemQTY,
+  setRemoveItemFromCart,
+} from "../../app/CartSlice";
 import annyang from "annyang";
 import { toprateslaes } from "../../data/data.js";
-import { motion, useAnimation } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const Item = ({
-  ifExists,
-  id,
-  title,
-  text,
-  img,
-  btn,
-  rating,
-  price,
-}) => {
+const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isInCart, setIsInCart] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const itemContainerRef = useRef(null);
 
   const controls = useAnimation();
@@ -30,6 +30,8 @@ const Item = ({
     triggerOnce: false,
     threshold: 0.2,
   });
+
+  const images = [img];
 
   useEffect(() => {
     if (inView) {
@@ -39,7 +41,8 @@ const Item = ({
         transition: { duration: 0.6 },
       });
     } else {
-      const direction = entry && entry.boundingClientRect.y < entry.rootBounds.y ? 50 : -50;
+      const direction =
+        entry && entry.boundingClientRect.y < entry.rootBounds.y ? 50 : -50;
       controls.start({
         opacity: 0,
         y: direction,
@@ -55,13 +58,13 @@ const Item = ({
         commands[`number ${i}`] = () => addToCartHandler(i);
       }
       annyang.addCommands(commands);
-      annyang.setLanguage('en-US');
+      annyang.setLanguage("en-US");
       annyang.start({ autoRestart: true, continuous: true });
 
-      annyang.addCallback('error', () => {
+      annyang.addCallback("error", () => {
         annyang.start({ autoRestart: true, continuous: true });
       });
-      annyang.addCallback('end', () => {
+      annyang.addCallback("end", () => {
         annyang.start({ autoRestart: true, continuous: true });
       });
     }
@@ -69,15 +72,18 @@ const Item = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (itemContainerRef.current && !itemContainerRef.current.contains(event.target)) {
+      if (
+        itemContainerRef.current &&
+        !itemContainerRef.current.contains(event.target)
+      ) {
         setIsExpanded(false);
         setIsShaking(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -130,6 +136,18 @@ const Item = ({
     setSelectedSize(size);
   };
 
+  const nextImage = (e) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const prevImage = (e) => {
+    e.stopPropagation();
+    setCurrentImageIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+    );
+  };
+
   return (
     <motion.div
       ref={ref}
@@ -145,47 +163,69 @@ const Item = ({
           transition={{ duration: 0.3 }}
         ></motion.div>
       )}
-    <motion.div
-      ref={itemContainerRef}
-      className={`relative bg-white rounded-xl p-4 transition-transform duration-700 ease-in-out flex flex-col justify-between item-container ${
-        ifExists ? "justify-items-start" : "justify-items-center"
-      } ${isShaking ? "shake" : ""}`}
-      style={{
-        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.2)",
-        zIndex: isExpanded ? 100 : 0,
-        borderRadius: "2rem",
-      }}
-      animate={{
-        transform: isExpanded ? "scale(1.2)" : "scale(1)",
-        height: isExpanded ? '28rem' : '24rem',
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-      }}
-      onClick={(e) => {
-        e.stopPropagation();
-        toggleExpansion();
-      }}
-      onTransitionEnd={() => setIsShaking(false)}
-      whileHover={{
-        boxShadow: "0px 0px 40px rgba(0, 0, 0, 0.3)", 
-      }}
-    >        <div className="relative flex justify-center items-center h-48">
+      <motion.div
+        ref={itemContainerRef}
+        className={`relative bg-white rounded-xl p-4 transition-transform duration-700 ease-in-out flex flex-col justify-between item-container ${
+          ifExists ? "justify-items-start" : "justify-items-center"
+        } ${isShaking ? "shake" : ""}`}
+        style={{
+          boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.2)",
+          zIndex: isExpanded ? 100 : 0,
+          borderRadius: "2rem",
+        }}
+        animate={{
+          transform: isExpanded ? "scale(1.2)" : "scale(1)",
+          height: isExpanded ? "28rem" : "24rem",
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 20,
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleExpansion();
+        }}
+        onTransitionEnd={() => setIsShaking(false)}
+        whileHover={{
+          boxShadow: "0px 0px 40px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        <div className="relative flex justify-center items-center h-48">
           <motion.div
             className="absolute inset-0 bg-gray-200 opacity-75 rounded-xl"
             style={{ borderRadius: "20px 20px 8px 8px" }}
           />
-<motion.img
-  src={img}
-  alt={`img/item-img/${id}`}
-  className="absolute object-contain z-10"
-  style={{ width: '80%', height: '80%' }}
-  initial={{ opacity: 0, y: 10 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.1, duration: 0.5 }}
-/>        </div>
+          {!imageLoaded && (
+            <Skeleton
+              className="absolute object-contain z-10"
+              style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
+              duration={1}
+            />
+          )}
+          <motion.img
+            src={images[currentImageIndex]}
+            alt={`img/item-img/${id}`}
+            className="absolute object-contain z-10"
+            style={{ width: "80%", height: "80%", display: imageLoaded ? "block" : "none" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            onLoad={() => setImageLoaded(true)}
+          />
+          <button
+            onClick={prevImage}
+            className="absolute left-[2%] top-1/2 transform -translate-y-1/2 bg-gray-300 p-1 rounded-full focus:outline-none transition-transform duration-300 ease-in-out hover:scale-110"
+          >
+            {"<"}
+          </button>
+          <button
+            onClick={nextImage}
+            className="absolute right-[2%] top-1/2 transform -translate-y-1/2 bg-gray-300 p-1 rounded-full focus:outline-none transition-transform duration-300 ease-in-out hover:scale-110"
+          >
+            {">"}
+          </button>
+        </div>
         <motion.h1
           className="text-lg font-medium text-gray-800 mt-2"
           initial={{ opacity: 0, y: -20 }}
@@ -213,7 +253,9 @@ const Item = ({
               <motion.button
                 key={size}
                 className={`px-4 py-2 border rounded-lg text-sm font-medium ${
-                  selectedSize === size ? 'bg-gradient-to-r from-[#ffa57e] to-[#d16f96] text-white' : 'bg-white text-gray-800'
+                  selectedSize === size
+                    ? "bg-gradient-to-r from-[#ffa57e] to-[#d16f96] text-white"
+                    : "bg-white text-gray-800"
                 }`}
                 onClick={() => handleSizeSelect(size)}
                 whileHover={{ scale: 1.1 }}

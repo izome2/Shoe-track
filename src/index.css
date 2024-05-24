@@ -2,17 +2,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@keyframes moveBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 200px 0; 
+  }
+}
 
 body {
   background-color: #f8f6f4;
-  background-image: url('src/assets/Shoelllll.svg');
+  background-image: url('./assets/Shoelllll.svg');
   background-repeat: repeat;
   background-size: 200px 200px;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  
+  animation: moveBackground 10s linear infinite;
 }
+
 
 @layer base {
   * {

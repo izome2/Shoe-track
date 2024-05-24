@@ -1,9 +1,3 @@
-
-
-body {
-  overflow-x: hidden;
-}
-
 .mobile-only {
   display: none;
 }
@@ -13,6 +7,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
   .mobile-only {
     display: flex;
     position: fixed;
@@ -29,10 +27,13 @@ body {
     color: black;
     margin-bottom: 1rem;
     margin-bottom: 20%; 
+    width: 100%;
+    text-align: center;
   }
 
   .logo-img {
-    margin-bottom: 20%;
+    width: 100px;
+    height: auto;
   }
 
   .nav-button:hover {
@@ -53,6 +54,8 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-bottom: 20%;
+    width: 100%;
+    text-align: center;
   }
   
   .start-shopping-button {

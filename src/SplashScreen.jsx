@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import videoSrc from './assets/video/logooo.mp4'; 
 
 const SplashScreen = () => {
   const [fadeOut, setFadeOut] = useState(false);
@@ -13,8 +14,8 @@ const SplashScreen = () => {
 
   return (
     <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
-      <video className="logo-video" autoPlay loop muted style={{ marginRight: '200px' }}>
-        <source src="src/assets/video/logooo.mp4" type="video/mp4" />
+      <video className="logo-video" autoPlay loop muted>
+        <source src={videoSrc} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>
