@@ -23,6 +23,8 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [textLoaded, setTextLoaded] = useState(false);
+  const [ratingLoaded, setRatingLoaded] = useState(false);
   const itemContainerRef = useRef(null);
 
   const controls = useAnimation();
@@ -192,17 +194,21 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
         }}
       >
         <div className="relative flex justify-center items-center h-48">
+          <motion.div
+            className="absolute inset-0 bg-gray-200 opacity-75 rounded-xl"
+            style={{ borderRadius: "20px 20px 8px 8px" }}
+          />
           {!imageLoaded && (
             <Skeleton
-              className="absolute inset-0 object-contain z-10 rounded-xl"
-              style={{ borderRadius: "2rem" }}
+              className="absolute object-contain z-10"
+              style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
               duration={1}
             />
           )}
           <motion.img
             src={images[currentImageIndex]}
             alt={`img/item-img/${id}`}
-            className="absolute object-contain z-10 rounded-xl"
+            className="absolute object-contain z-10"
             style={{ width: "80%", height: "80%", display: imageLoaded ? "block" : "none" }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -228,7 +234,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          {title}
+          {textLoaded ? title : <Skeleton width={150} />}
         </motion.h1>
         <motion.p
           className="text-sm text-gray-600"
@@ -236,7 +242,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          {text}
+          {textLoaded ? text : <Skeleton count={2} />}
         </motion.p>
         {isExpanded && (
           <motion.div
@@ -270,7 +276,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
             >
-              ${price}
+              {textLoaded ? `$${price}` : <Skeleton width={50} />}
             </motion.h1>
           </div>
           <div className="flex items-center gap-1">
@@ -281,7 +287,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
             >
-              {rating}
+              {ratingLoaded ? rating : <Skeleton width={30} />}
             </motion.h1>
           </div>
         </div>
