@@ -198,10 +198,10 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
                       >
           {!imageLoaded && (
             <Skeleton
-              className="absolute inset-0 z-10"
-              style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
-              duration={1}
-            />
+            className="absolute object-contain z-10"
+            style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
+            duration={1}
+          />
           )}
           <motion.img
             src={images[currentImageIndex]}
