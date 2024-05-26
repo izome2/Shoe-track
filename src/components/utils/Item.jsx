@@ -193,7 +193,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
           boxShadow: "0px 0px 40px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <div className="relative flex justify-center items-center h-48">
+        <div className="relative flex justify-center items-center h-48 bg-gray-200 rounded-lg">
           {!imageLoaded && (
             <Skeleton
               className="absolute inset-0 z-10"
@@ -243,7 +243,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
         {isExpanded && (
           <motion.div
             className="mt-4 flex justify-around"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
