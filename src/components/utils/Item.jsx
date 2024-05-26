@@ -11,7 +11,7 @@ import annyang from "annyang";
 import { toprateslaes } from "../../data/data.js";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
@@ -192,37 +192,30 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
         }}
       >
         <div className="relative flex justify-center items-center h-48">
-          <SkeletonTheme baseColor="#e1e1e1" highlightColor="#f2f2f2">
-            <motion.div
-              className="absolute inset-0 bg-gray-200 opacity-75 rounded-xl"
-              style={{ borderRadius: "20px 20px 8px 8px" }}
-            />
-            {!imageLoaded && (
-              <Skeleton
-                className="absolute object-contain z-10"
-                style={{
-                  width: "80%",
-                  height: "80%",
-                  borderRadius: "20px 20px 8px 8px",
-                }}
-                duration={1}
-              />
-            )}
-            <motion.img
-              src={images[currentImageIndex]}
-              alt={`img/item-img/${id}`}
-              className="absolute object-contain z-10"
-              style={{
-                width: "80%",
-                height: "80%",
-                display: imageLoaded ? "block" : "none",
-              }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              onLoad={() => setImageLoaded(true)}
-            />
-          </SkeletonTheme>
+          <Skeleton
+            className="absolute object-contain z-10"
+            style={{
+              width: "80%",
+              height: "80%",
+              borderRadius: "20px 20px 8px 8px",
+              display: imageLoaded ? "none" : "block",
+            }}
+            duration={1}
+          />
+          <motion.img
+            src={images[currentImageIndex]}
+            alt={`img/item-img/${id}`}
+            className="absolute object-contain z-10"
+            style={{
+              width: "80%",
+              height: "80%",
+              display: imageLoaded ? "block" : "none",
+            }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            onLoad={() => setImageLoaded(true)}
+          />
           <button
             onClick={prevImage}
             className="absolute left-[2%] top-1/2 transform -translate-y-1/2 bg-gray-300 p-1 rounded-full focus:outline-none transition-transform duration-300 ease-in-out hover:scale-110"
