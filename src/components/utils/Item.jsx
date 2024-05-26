@@ -216,10 +216,14 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
               height: "80%",
               display: imageLoaded ? "block" : "none",
             }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            onLoad={() => setImageLoaded(true)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            onLoad={() => {
+              setImageLoaded(true);
+              setTextLoaded(true);
+              setRatingLoaded(true);
+            }}
           />
           <button
             onClick={prevImage}
