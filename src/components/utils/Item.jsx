@@ -194,13 +194,9 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
         }}
       >
         <div className="relative flex justify-center items-center h-48">
-          <motion.div
-            className="absolute inset-0 bg-gray-200 opacity-75 rounded-xl"
-            style={{ borderRadius: "20px 20px 8px 8px" }}
-          />
           {!imageLoaded && (
             <Skeleton
-              className="absolute object-contain z-10"
+              className="absolute inset-0 z-10"
               style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
               duration={1}
             />
