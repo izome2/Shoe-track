@@ -192,30 +192,23 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
         }}
       >
         <div className="relative flex justify-center items-center h-48">
-          <div className="relative w-full h-full">
-            {!imageLoaded && (
-              <Skeleton
-              className="absolute inset-0 bg-gray-200 opacity-75 rounded-xl"
-              style={{
-                  borderRadius: "20px 20px 8px 8px",
-                }}
-                duration={1}
-              />
-            )}
-            <motion.img
-              src={images[currentImageIndex]}
-              alt={`img/item-img/${id}`}
-              className="absolute object-contain z-10 w-full h-full"
-              style={{
-                display: imageLoaded ? "block" : "none",
-                borderRadius: "20px 20px 8px 8px",
-              }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              onLoad={() => setImageLoaded(true)}
+          {!imageLoaded && (
+            <Skeleton
+              className="absolute inset-0 object-contain z-10 rounded-xl"
+              style={{ borderRadius: "2rem" }}
+              duration={1}
             />
-          </div>
+          )}
+          <motion.img
+            src={images[currentImageIndex]}
+            alt={`img/item-img/${id}`}
+            className="absolute object-contain z-10 rounded-xl"
+            style={{ width: "80%", height: "80%", display: imageLoaded ? "block" : "none" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            onLoad={() => setImageLoaded(true)}
+          />
           <button
             onClick={prevImage}
             className="absolute left-[2%] top-1/2 transform -translate-y-1/2 bg-gray-300 p-1 rounded-full focus:outline-none transition-transform duration-300 ease-in-out hover:scale-110"
