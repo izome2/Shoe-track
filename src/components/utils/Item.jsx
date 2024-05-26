@@ -210,15 +210,12 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
           <motion.img
             src={images[currentImageIndex]}
             alt={`img/item-img/${id}`}
-            className="absolute object-contain z-10"
+            className="absolute object-contain z-10 transition-opacity duration-500"
             style={{
               width: "80%",
               height: "80%",
-              display: imageLoaded ? "block" : "none",
+              opacity: imageLoaded ? 1 : 0,
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
             onLoad={() => {
               setImageLoaded(true);
               setTextLoaded(true);
