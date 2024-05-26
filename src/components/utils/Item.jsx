@@ -206,7 +206,7 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
             alt={`img/item-img/${id}`}
             className="absolute object-contain z-10 w-full h-full"
             style={{
-              display: imageLoaded ? "block" : "none",
+              width: "80%", height: "80%",
               borderRadius: "20px 20px 8px 8px",
             }}
             initial={{ opacity: 0, y: 10 }}
