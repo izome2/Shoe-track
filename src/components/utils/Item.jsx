@@ -193,21 +193,32 @@ const Item = ({ ifExists, id, title, text, img, btn, rating, price }) => {
           boxShadow: "0px 0px 40px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <div className="relative flex justify-center items-center h-48 bg-gray-200"
-                      style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
-                      >
+        <div
+          className="relative flex justify-center items-center h-48 bg-gray-200 opacity-75"
+          style={{
+            width: "80%",
+            height: "80%",
+            borderRadius: "20px 20px 8px 8px",
+          }}
+        >
           {!imageLoaded && (
             <Skeleton
-            className="absolute object-contain z-10"
-            style={{ width: "80%", height: "80%", borderRadius: "20px 20px 8px 8px" }}
-            duration={1}
-          />
+              className="absolute inset-0 z-10"
+              style={{
+                borderRadius: "20px 20px 8px 8px",
+              }}
+              duration={1}
+            />
           )}
           <motion.img
             src={images[currentImageIndex]}
             alt={`img/item-img/${id}`}
             className="absolute object-contain z-10"
-            style={{ width: "80%", height: "80%", display: imageLoaded ? "block" : "none" }}
+            style={{
+              width: "80%",
+              height: "80%",
+              display: imageLoaded ? "block" : "none",
+            }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
