@@ -9,5 +9,47 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <div class="custom-scrollbar-container">
+      <div class="custom-scrollbar-thumb"></div>
+    </div>
+
+    <script>
+      let scrollTimeout;
+
+      function setVhProperty() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
+
+      function updateScrollbarThumb() {
+        const container = document.querySelector(".custom-scrollbar-container");
+        const thumb = document.querySelector(".custom-scrollbar-thumb");
+        const scrollableHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const thumbPosition =
+          (window.scrollY / scrollableHeight) *
+          (container.clientHeight - thumb.clientHeight);
+        thumb.style.top = `${thumbPosition}px`;
+      }
+
+      function showScrollbar() {
+        const container = document.querySelector(".custom-scrollbar-container");
+        container.classList.add("show-scrollbar");
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          container.classList.remove("show-scrollbar");
+        }, 1000);
+      }
+
+      window.addEventListener("resize", setVhProperty);
+      window.addEventListener("load", setVhProperty);
+      window.addEventListener("scroll", () => {
+        updateScrollbarThumb();
+        showScrollbar();
+      });
+
+      setVhProperty();
+      updateScrollbarThumb();
+    </script>
   </body>
 </html>
